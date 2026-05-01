@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import * as pdfjsLib from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { ReaderPage } from '../models/page.model';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/legacy/build/pdf.worker.mjs',
+  import.meta.url
+).toString();
 
 @Injectable({ providedIn: 'root' })
 export class PdfReaderService {
@@ -10,8 +15,6 @@ export class PdfReaderService {
   }
 
   async extractBilingualPagesFromData(data: ArrayBuffer): Promise<ReaderPage[]> {
-    // `disableWorker` is not part of strongly typed getDocument params in current pdfjs typings.
-    // Use an explicit Uint8Array payload to satisfy the expected `data` type.
     const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(data) });
     const pdf = await loadingTask.promise;
     const pages: ReaderPage[] = [];

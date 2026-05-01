@@ -41,3 +41,5 @@ See:
 ## Notes
 - The initial Arabic/German split uses a heuristic from page text lines. If the source PDF has a specific structure, update `PdfReaderService` splitting logic for perfect alignment.
 - After first extraction, content is served from local cache and works offline.
+
+- Uses pdf.js legacy build + bundled worker path for better browser compatibility when loading local PDFs.

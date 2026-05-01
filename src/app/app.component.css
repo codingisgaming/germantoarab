@@ -5,6 +5,7 @@
 button,input,.upload { background:#151515; color:#fff; border:1px solid #333; border-radius:10px; padding:.5rem .75rem; }
 .upload input { display:none; }
 .hint { opacity:.85; margin:1.25rem 0; }
+.error { color:#ff7d7d; margin:0.5rem 0 1rem; }
 .reader { display:grid; grid-template-columns:1fr 1fr; gap:1rem; transition:all .3s ease; }
 .panel { background:#101010; border-radius:16px; padding:1.2rem; box-shadow:0 8px 32px rgba(0,0,0,.35); min-height:55vh; }
 .arabic { font-family:'Noto Naskh Arabic', serif; line-height:2; }

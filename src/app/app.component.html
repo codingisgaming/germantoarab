@@ -18,6 +18,8 @@
   </section>
 
   <p class="hint" *ngIf="!hasData() && !loading()">Upload the Ardh Zekola PDF to extract and cache all pages locally.</p>
+  <p class="hint" *ngIf="loading()">Processing PDF pages…</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
   <main *ngIf="hasData() && current() as page" class="reader" [style.fontSize.px]="fontSize()">
     <article class="panel arabic" dir="rtl">

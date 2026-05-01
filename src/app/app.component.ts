@@ -21,6 +21,7 @@ export class AppComponent {
   pageJump = 1;
   loading = signal(false);
   hasData = signal(false);
+  error = signal('');
 
   current = computed(() => this.pages().find((p) => p.pageNumber === this.currentPage()));
   progress = computed(() => (this.pages().length ? Math.round((this.currentPage() / this.pages().length) * 100) : 0));
@@ -47,12 +48,19 @@ export class AppComponent {
     if (!file) return;
 
     this.loading.set(true);
-    const extracted = await this.pdfService.extractBilingualPagesFromFile(file);
-    this.pages.set(extracted);
-    this.hasData.set(true);
-    this.goToPage(1);
-    this.storage.savePages(extracted);
-    this.loading.set(false);
+    this.error.set('');
+    try {
+      const extracted = await this.pdfService.extractBilingualPagesFromFile(file);
+      this.pages.set(extracted);
+      this.hasData.set(true);
+      this.goToPage(1);
+      this.storage.savePages(extracted);
+    } catch (e) {
+      console.error(e);
+      this.error.set('Could not read PDF. Please try another file or refresh and retry.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   next(): void { if (this.currentPage() < this.pages().length) this.goToPage(this.currentPage() + 1); }
