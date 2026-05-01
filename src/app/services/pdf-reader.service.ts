@@ -10,7 +10,9 @@ export class PdfReaderService {
   }
 
   async extractBilingualPagesFromData(data: ArrayBuffer): Promise<ReaderPage[]> {
-    const loadingTask = pdfjsLib.getDocument({ data, disableWorker: true });
+    // `disableWorker` is not part of strongly typed getDocument params in current pdfjs typings.
+    // Use an explicit Uint8Array payload to satisfy the expected `data` type.
+    const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(data) });
     const pdf = await loadingTask.promise;
     const pages: ReaderPage[] = [];
 
