@@ -7,6 +7,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
+type TextItem = {
+  str: string;
+  transform: number[];
+};
+
 @Injectable({ providedIn: 'root' })
 export class PdfReaderService {
   async extractBilingualPagesFromFile(file: File): Promise<ReaderPage[]> {
@@ -21,18 +26,42 @@ export class PdfReaderService {
 
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1 });
       const content = await page.getTextContent();
-      const text = content.items.map((item: any) => item.str).join('\n');
-      const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
-      const midpoint = Math.ceil(lines.length / 2);
+      const textItems = content.items.filter((x: any) => 'str' in x) as TextItem[];
+
+      const { arabic, german, wholePage } = this.extractColumns(textItems, viewport.width);
 
       pages.push({
         pageNumber: i,
-        arabic: lines.slice(0, midpoint).join(' '),
-        german: lines.slice(midpoint).join(' ')
+        // Keep full content on both sides when only one language exists in the PDF page.
+        arabic: arabic || wholePage,
+        german: german || wholePage
       });
     }
 
     return pages;
+  }
+
+  private extractColumns(items: TextItem[], pageWidth: number): { arabic: string; german: string; wholePage: string } {
+    const lines = items
+      .map((item) => ({
+        text: item.str.trim(),
+        x: item.transform[4] ?? 0,
+        y: item.transform[5] ?? 0
+      }))
+      .filter((item) => item.text.length > 0)
+      .sort((a, b) => (Math.abs(b.y - a.y) < 2 ? a.x - b.x : b.y - a.y));
+
+    const divider = pageWidth / 2;
+    const left = lines.filter((l) => l.x < divider).map((l) => l.text);
+    const right = lines.filter((l) => l.x >= divider).map((l) => l.text);
+
+    // Arabic on the LEFT and German on the RIGHT per requested layout.
+    const arabic = left.join('\n');
+    const german = right.join('\n');
+    const wholePage = lines.map((l) => l.text).join('\n');
+
+    return { arabic, german, wholePage };
   }
 }

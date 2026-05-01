@@ -12,3 +12,5 @@ button,input,.upload { background:#151515; color:#fff; border:1px solid #333; bo
 .german { font-family:'Merriweather', serif; line-height:1.85; }
 .bookmarks { margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap; }
 @media (max-width: 900px){ .reader { grid-template-columns:1fr; } }
+
+.panel p { white-space: pre-wrap; overflow-wrap: anywhere; }
