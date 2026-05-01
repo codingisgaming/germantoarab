@@ -1,0 +1,13 @@
+:host { display:block; min-height:100vh; background:#050505; color:#f7f7f7; font-family:Inter,Segoe UI,system-ui,sans-serif; }
+.app-shell { padding:1rem; }
+.topbar,.controls,footer { display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; }
+.controls { margin:1rem 0; }
+button,input,.upload { background:#151515; color:#fff; border:1px solid #333; border-radius:10px; padding:.5rem .75rem; }
+.upload input { display:none; }
+.hint { opacity:.85; margin:1.25rem 0; }
+.reader { display:grid; grid-template-columns:1fr 1fr; gap:1rem; transition:all .3s ease; }
+.panel { background:#101010; border-radius:16px; padding:1.2rem; box-shadow:0 8px 32px rgba(0,0,0,.35); min-height:55vh; }
+.arabic { font-family:'Noto Naskh Arabic', serif; line-height:2; }
+.german { font-family:'Merriweather', serif; line-height:1.85; }
+.bookmarks { margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap; }
+@media (max-width: 900px){ .reader { grid-template-columns:1fr; } }
