@@ -1,0 +1,41 @@
+<div class="app-shell" [class.loading]="loading()">
+  <header class="topbar">
+    <h1>Ardh Zekola • Bilingual Reader</h1>
+    <button (click)="continueReading()" [disabled]="!hasData()">Continue Reading</button>
+    <label class="upload">Load PDF <input type="file" accept="application/pdf" (change)="onPdfSelected($event)" /></label>
+  </header>
+
+  <section class="controls" *ngIf="hasData()">
+    <button (click)="prev()">Previous</button>
+    <button (click)="next()">Next</button>
+    <label>Page <input type="number" [(ngModel)]="pageJump" (change)="goToPage(pageJump)"/></label>
+    <span>{{ currentPage() }} / {{ pages().length }}</span>
+    <span>{{ progress() }}%</span>
+    <button (click)="setFont(-1)">A-</button>
+    <button (click)="setFont(1)">A+</button>
+    <button (click)="addBookmark()">Bookmark</button>
+    <input type="search" placeholder="Search current page" [ngModel]="query()" (ngModelChange)="query.set($event)" />
+  </section>
+
+  <p class="hint" *ngIf="!hasData() && !loading()">Upload the Ardh Zekola PDF to extract and cache all pages locally.</p>
+  <p class="hint" *ngIf="loading()">Processing PDF pages…</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+
+  <main *ngIf="hasData() && current() as page" class="reader" [style.fontSize.px]="fontSize()">
+    <article class="panel arabic" dir="rtl">
+      <h2>العربية</h2>
+      <p>{{ page.arabic }}</p>
+    </article>
+    <article class="panel german" dir="ltr">
+      <h2>Deutsch</h2>
+      <p>{{ page.german }}</p>
+    </article>
+  </main>
+
+  <aside class="bookmarks" *ngIf="hasData()">
+    <h3>Bookmarks</h3>
+    <button *ngFor="let b of filteredBookmarks()" (click)="goToPage(b.pageNumber)">Page {{ b.pageNumber }}</button>
+  </aside>
+
+  <footer *ngIf="hasData()">Page {{ currentPage() }}</footer>
+</div>
